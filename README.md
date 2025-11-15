@@ -112,13 +112,13 @@ alembic downgrade base
 
 ## 支持我
 
-![](图片\收款码.png)
+![](https://github.com/wolf-aowu/FundAnalysis/blob/main/40a6f72c34a3b60ecbe9b7330eb8f7fe5baf5207/%E5%9B%BE%E7%89%87/%E6%94%B6%E6%AC%BE%E7%A0%81.png?raw=true)
 
-![](图片\支持一下.png)
+![](https://github.com/wolf-aowu/FundAnalysis/blob/main/40a6f72c34a3b60ecbe9b7330eb8f7fe5baf5207/%E5%9B%BE%E7%89%87/%E6%94%AF%E6%8C%81%E4%B8%80%E4%B8%8B.png?raw=true)
 
-![](图片\一杯奶茶.png)
+![](https://github.com/wolf-aowu/FundAnalysis/blob/main/40a6f72c34a3b60ecbe9b7330eb8f7fe5baf5207/%E5%9B%BE%E7%89%87/%E4%B8%80%E6%9D%AF%E5%A5%B6%E8%8C%B6.png?raw=true)
 
-![](图片\有用赏.png)
+![](https://github.com/wolf-aowu/FundAnalysis/blob/main/40a6f72c34a3b60ecbe9b7330eb8f7fe5baf5207/%E5%9B%BE%E7%89%87/%E6%9C%89%E7%94%A8%E8%B5%8F.png?raw=true)
 
 ## 功能（写给我自己看的，非要看我不拦你😑）
 
