@@ -29,9 +29,11 @@ alembic           1.17.2
 
 2. 安装虚拟环境（该步骤可跳过，推荐安装，自行搜索安装教程）
 
-3. `pip install -r requirement.txt`
+   参考网址：https://github.com/wolf-aowu/StudyNotes/blob/main/Notes-VS%20Code/Python/%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83.md
 
-4. 在 `config/config.py` 文件中配上正确的 MySQL 账号密码等
+3. `pip install -r requirements.txt` 安装需要用到的 python 库。
+
+4. 在 `config/config.py` 文件中配上正确的 MySQL 账号密码等。
 
 5. `python before_start.py create-app-database` 创建 `fund_analysis` 数据库
 
@@ -41,9 +43,72 @@ alembic           1.17.2
 
    `alembic init migrations` 会生成 `migrations` 目录和 `alembic.ini` 文件
 
-   打开 `alembic.ini` 文件找到 `sqlalchemy.url = driver://user:pass@localhost/dbname` 等号后面替换为 `db_url` 的值，例 `mysql+pymysql://root:1234@localhost:3306/fund_analysis`，注意单引号不需要
+   打开 `alembic.ini` 文件找到 `sqlalchemy.url = driver://user:pass@localhost/dbname` 等号后面替换为 `db_url` 的值，例 `mysql+pymysql://root:1234@localhost:3306/fund_analysis`，注意单引号不需要。
 
+   打开 `migrations/env.py` 文件，添加
    
+   ``` python
+   import pkgutil
+   import importlib
+   # 添加项目的根目录作为模块导入，这样项目的绝对路径就能生效
+   import os
+   import sys
+   sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+   
+   from app.models.base import Base
+   import app.models
+   
+   # 本项目中数据库的所有模型类都会放在 app/models 文件夹下（暂定），导入所有数据库模型类
+   # 想要能够动态更新表结构就必须把需要更新表结构的所有模型类都导入，只有导入的模型类才会与数据库表比对后更新
+   for loader, module_name, ispkg in pkgutil.iter_modules(app.models.__path__):
+       if not ispkg and module_name != "base":
+           print(f"{module_name=}")
+           full_module_name = f'app.models.{module_name}'
+           module = importlib.import_module(full_module_name)
+   ```
+   
+   将 `target_metadata = None` 改为 `target_metadata = Base.metadata`
+   
+   如果使用异步数据库，需要添加以下行，代码里有找到位置，加上注释的那几行（我用的是同步没试过，网上抄的）。
+   
+   ``` python
+   with connectable.connect() as connection:
+       context.configure(
+           connection=connection, target_metadata=target_metadata,
+           # # 如果你使用异步数据库，需要添加以下行
+           # transaction_per_migration=True,  # 确保每个迁移都在一个事务中
+           # compare_type=True,  # 启用类型比较，以便自动检测类型变更
+       )
+   ```
+   
+   执行 `alembic revision --autogenerate -m "create initial tables"` 其中 `-m` 参数后面的内容可自定义，是给本次更新记的 `message` （注释）。执行完会在 `migrations/versions` 文件夹下生成 `version_id_create_initial_tables.py` 迁移脚本，并在数据库中创建 `alembic_version` 表。如果有问题 `migrations/versions` 下的文件和数据库中的 `alembic_version` 表都是可以删除的。
+   
+   执行 `alembic upgrade head` 会执行迁移脚本创建表。
+
+SQLAlchemy 基础参考网址：
+
+https://www.bilibili.com/video/BV1RB4y1P7jz/?p=54&share_source=copy_web&vd_source=19ded2cbbeabb5205eb9a82e27ee28db
+
+动态更新表结构（数据库迁移技术）参考网址：
+https://blog.csdn.net/weixin_50882748/article/details/149811042?fromshare=blogdetail&sharetype=blogdetail&sharerId=149811042&sharerefer=PC&sharesource=lang_wolf&sharefrom=from_link
+https://www.cnblogs.com/jackadam/p/8684633.html
+
+python 导入规则参考网址：https://www.bilibili.com/video/BV1K24y1k7XA/?share_source=copy_web&vd_source=19ded2cbbeabb5205eb9a82e27ee28db
+
+alembic 常用命令
+
+``` shell
+# 生成迁移脚本
+alembic revision --autogenerate -m "message"
+# 更新数据库，如果这一步报错，需要删除迁移文件
+alembic upgrade head
+# 查看迁移历史
+alembic history
+# 回退到上一个版本
+alembic downgrade -1
+# 数据库回退到初始状态
+alembic downgrade base
+```
 
 ## 支持我
 
