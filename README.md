@@ -110,6 +110,20 @@ alembic downgrade -1
 alembic downgrade base
 ```
 
+## 项目技术
+
+### 登陆页面背景图
+
+登陆页面背景图采用 Picsum Photos `green`、`nature` 主题随机生成。这是个 MIT 许可证的资源项目😘😍。
+
+`https://picsum.photos/1920/1080?green,nature`
+
+`1920` 和 `1080` 代表图片大小 `1920 * 1080`。
+
+用法教学网址：https://picsum.photos/
+
+GitHub：https://github.com/DMarby/picsum-photos
+
 ## 支持我
 
 ![](https://raw.githubusercontent.com/wolf-aowu/FundAnalysis/refs/heads/main/%E5%9B%BE%E7%89%87/%E6%94%B6%E6%AC%BE%E7%A0%81.png)
