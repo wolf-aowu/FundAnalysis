@@ -25,6 +25,21 @@ alembic           1.17.2
 
 ## 安装
 
+### 前端
+
+1. 安装 node.js（网上自行搜索安装教程）
+
+   ``` shell
+   # 验证安装成功，有版本号
+   npm -v
+   ```
+
+2. 在项目目录下终端中执行 `npm create-react-app fund-analysis` 命令。创建成功后项目目录中会多出一个 `fund-analysis` 的文件夹，将文件夹下的 `node_modules` 文件夹复制至 `client` 目录下。删除 `fund-analysis`。
+
+3. 进入 client 目录下执行 `npm run start` 即可运行前端代码。
+
+### 后端
+
 1. 需要安装 python、MySQL（网上自行搜索安装教程）
 
 2. 安装虚拟环境（该步骤可跳过，推荐安装，自行搜索安装教程）
