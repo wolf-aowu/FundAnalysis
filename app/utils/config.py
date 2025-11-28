@@ -1,7 +1,7 @@
 # 放配置文件相关方法
 import os
 
-from app.config import config
+from app.configs import config
 
 
 def get_config() -> config.Config:
