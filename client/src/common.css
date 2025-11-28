@@ -1,0 +1,46 @@
+/* 
+    标准金色 #ffd700
+    香槟金 #f3e1a5 #e6c485
+    明亮黄色 #ffe600
+    标准银色 #c0c0c0
+    天蓝色 #87ceeb
+    巧克力色 #5c3317
+    米黄色 #fff8dc‌
+    奶油米 #fffd00
+    ‌幽灵白 #f8f8ff
+    浅白色 #f5f5f5
+    正红色 #ff0000
+    深红色 #8b0000
+    粉红色 #ffc0cb
+    绿松石 #70dbdb
+    深蓝色 #4169e1
+    海军蓝 #00008b
+    中蓝色 #0000cd
+    水蓝色 #00bfff
+*/
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: MicrosoftYaHei, MicrosoftYaHei-Regular;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+input {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+button {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+a:link {
+    text-decoration: none; /* 去除下划线 */
+}
