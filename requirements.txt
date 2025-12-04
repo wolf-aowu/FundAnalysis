@@ -1,6 +1,13 @@
+# Web框架
 fastapi[standard]
+# 数据库相关
 SQLAlchemy
 sqlalchemy-utils
-click
 pymysql
+aiomysql
+# 数据库身份验证
+cryptography
+# 数据库迁移
 alembic
+# python 命令行工具
+click
