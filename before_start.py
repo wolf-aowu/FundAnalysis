@@ -40,13 +40,13 @@ def create_all_table():
     engine = create_engine(f"{db_url}?charset={config_obj.MYSQL_CHARSET}", echo=True)
     with Session(engine) as session:
 
-        # 导入 models 文件夹下所有的 module，不包括 base.py 因为上面导入过了，再导一遍也不会再执行一遍
-        from app.models.base import Base
-        import app.models
-        for loader, module_name, ispkg in pkgutil.iter_modules(app.models.__path__):
+        # 导入 models/orm 文件夹下所有的 module，不包括 base.py 因为上面导入过了，再导一遍也不会再执行一遍
+        from app.models.orm.base import Base
+        import app.models.orm
+        for loader, module_name, ispkg in pkgutil.iter_modules(app.models.orm.__path__):
             if not ispkg and module_name != "base":
                 print(f"{module_name=}")
-                full_module_name = f'app.models.{module_name}'
+                full_module_name = f'app.models.orm.{module_name}'
                 module = importlib.import_module(full_module_name)
 
         try:
