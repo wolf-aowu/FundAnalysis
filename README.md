@@ -25,16 +25,19 @@ fastapi-cloud-cli 0.3.1
 pydantic          2.12.4
 python-multipart  0.0.20
 uvicorn           0.38.0
-sqlmodel          0.0.27
 SQLAlchemy-Utils  0.42.0
-click             8.3.0
 PyMySQL           1.1.2
+aiomysql          0.3.2
+cryptography      46.0.3
 alembic           1.17.2
+click             8.3.0
 ```
 
 ## 安装
 
 ### 前端
+
+大部分文件都在 client 目录下
 
 1. 安装 node.js（网上自行搜索安装教程）
 
@@ -50,6 +53,8 @@ alembic           1.17.2
 4. 进入 client 目录下执行 `npm run start` 即可运行前端代码。
 
 ### 后端
+
+大部分文件都在 app 目录下
 
 1. 需要安装 python、MySQL（网上自行搜索安装教程）
 
@@ -81,15 +86,15 @@ alembic           1.17.2
     import sys
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     
-    from app.models.base import Base
-    import app.models
+    from app.models.orm.base import Base
+    import app.models.orm
     
-    # 本项目中数据库的所有模型类都会放在 app/models 文件夹下（暂定），导入所有数据库模型类
+    # 本项目中数据库的所有模型类都会放在 app/models/orm 文件夹下（暂定），导入所有数据库模型类
     # 想要能够动态更新表结构就必须把需要更新表结构的所有模型类都导入，只有导入的模型类才会与数据库表比对后更新
-    for loader, module_name, ispkg in pkgutil.iter_modules(app.models.__path__):
+    for loader, module_name, ispkg in pkgutil.iter_modules(app.models.orm.__path__):
         if not ispkg and module_name != "base":
             print(f"{module_name=}")
-            full_module_name = f'app.models.{module_name}'
+            full_module_name = f'app.models.orm.{module_name}'
             module = importlib.import_module(full_module_name)
     ```
 
@@ -110,6 +115,38 @@ alembic           1.17.2
     执行 `alembic revision --autogenerate -m "create initial tables"` 其中 `-m` 参数后面的内容可自定义，是给本次更新记的 `message` （注释）。执行完会在 `migrations/versions` 文件夹下生成 `version_id_create_initial_tables.py` 迁移脚本，并在数据库中创建 `alembic_version` 表。如果有问题 `migrations/versions` 下的文件和数据库中的 `alembic_version` 表都是可以删除的。
 
     执行 `alembic upgrade head` 会执行迁移脚本创建表。
+    
+    **如果有一天改变了数据库模型的目录**，也就是 `models/orm` 下的文件改变位置了，需要改变（例如 `models` -> `models/orm`）：
+    
+    原代码：
+    
+    ``` python
+    import app.models
+    from app.models.base import Base
+    
+    for loader, module_name, ispkg in pkgutil.iter_modules(app.models.__path__):
+        if not ispkg and module_name != "base":
+            print(f"{module_name=}")
+            full_module_name = f'app.models.{module_name}'
+            module = importlib.import_module(full_module_name)
+    target_metadata = Base.metadata
+    ```
+    
+    改后：
+    
+    ``` python
+    import app.models.orm
+    from app.models.orm.base import Base
+    
+    for loader, module_name, ispkg in pkgutil.iter_modules(app.models.orm.__path__):
+        if not ispkg and module_name != "base":
+            print(f"{module_name=}")
+            full_module_name = f'app.models.orm.{module_name}'
+            module = importlib.import_module(full_module_name)
+    target_metadata = Base.metadata
+    ```
+    
+    `before_start.py` 文件也需要这样改。
 
 SQLAlchemy 基础参考网址：
 
@@ -233,6 +270,79 @@ module.exports = function(app) {
 用法教学网址：https://picsum.photos/
 
 GitHub：https://github.com/DMarby/picsum-photos
+
+### 密码加密
+
+加盐处理 + SHA3-256 哈希算法
+
+步骤：
+
+1. 生成随机盐值
+2. 密码 + 盐值
+3. 计算哈希
+4. 将盐值和哈希值一起存入数据库中
+
+**为什么不用 PBKDF2 算法（来自 AI 说的）：**
+
+PBKDF2 算法依赖迭代次数，计算效率较慢，输出长度可变。
+
+SHA3-256 算法为理论 $2^{256}$ 复杂度，计算较快，适合大量数据，输出长度固定 256 位。
+
+### 循环 import 问题
+
+``` shell
+  File "D:\Git 仓库\FundAnalysis\main.py", line 7, in <module>
+    from app.routers.root import root_router
+  File "D:\Git 仓库\FundAnalysis\app\routers\root.py", line 2, in <module>
+    from app.queries.user import get_user_by_username
+  File "D:\Git 仓库\FundAnalysis\app\queries\user.py", line 1, in <module>
+    from app.queries.base import get_session
+  File "D:\Git 仓库\FundAnalysis\app\queries\base.py", line 1, in <module>
+    from main import AsyncSession
+  File "D:\Git 仓库\FundAnalysis\main.py", line 7, in <module>
+    from app.routers.root import root_router
+```
+
+报错原因：
+
+`main.py` 文件需要添加路由，则需要从 `root.py` 文件中导入 `root_touter`。在 `main.py` 文件中创建了数据库会话类 `AsyncSession`。在 `root.py` 文件中因为需要处理请求，所以需要执行一些数据库操作，数据库操作在 `user.py` 文件中，此时需要实例出来一个会话对象，实例会话对象这个功能我规划在了 `base.py` 文件中，要实现这个功能就需要从 `main.py` 文件导入数据库会话类 `AsyncSession`。这就构成了循环导入。
+
+说明：
+
+1. 知道 FastAPI 支持注入依赖，但我觉得那样写有点丑（没试过能不能解决循环导入的问题，GPT 回答可以），理由：
+   1. 在写接受请求时还要关心这个方法要不要查询数据库
+   2. 我希望数据库操作方法能够写在一个文件中与接收请求响应的方法分开写，这样更便于管理和代码重复利用
+   3. 每个请求需要一个 session 入参，数据库操作也需要一个 session 入参，写两遍难受
+
+方案：
+
+我将 `base.py` 文件中导入 `AsyncSession` 放进了 `with_session`（功能等同于报错中的 `get_session`） 方法中，而不是在文件的开头就导入。也就是错开了导入时间。同时为了能够只写一遍实例 `AsyncSeesion` 我使用了装饰器来减少敲的代码量。
+
+queries/base.py
+
+``` python
+from functools import wraps
+
+def with_session(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        from main import AsyncSession
+        async with AsyncSession() as session:
+            return await func(session, *args, **kwargs)
+    return wrapper
+```
+
+queries/user.py
+
+``` python
+from app.queries.base import with_session
+@with_session
+async def get_user_by_username(session, username: str) -> User:
+    result = await session.execute(select(UserORM).where(UserORM.username == username))
+    user_orm_obj = result.scalars().first()
+    user_obj = to_entity(User, user_orm_obj)
+    return user_obj
+```
 
 ## 支持我
 
