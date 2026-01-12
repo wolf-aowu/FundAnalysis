@@ -12,8 +12,29 @@
 ### 前端
 
 ``` shell
-"umi-request": "^1.4.0",
-"react-router-dom": "^7.9.6",
+react-router-dom@7.12.0
+vite@7.3.1
+antd@6.1.4
+axios@1.13.2
+```
+
+所有依赖包：
+
+``` json
+├── @eslint/js@9.39.2
+├── @types/react-dom@19.2.3
+├── @types/react@19.2.8
+├── @vitejs/plugin-react@5.1.2
+├── antd@6.1.4
+├── axios@1.13.2
+├── eslint-plugin-react-hooks@7.0.1
+├── eslint-plugin-react-refresh@0.4.26
+├── eslint@9.39.2
+├── globals@16.5.0
+├── react-dom@19.2.3
+├── react-router-dom@7.12.0
+├── react@19.2.3
+└── vite@7.3.1
 ```
 
 ### 后端
@@ -46,7 +67,9 @@ click             8.3.0
     npm -v
     ```
 
-2. 在项目目录下终端中执行 `npx create-react-app fund-analysis` 命令。创建成功后项目目录中会多出一个 `fund-analysis` 的文件夹，将文件夹下的 `node_modules` 文件夹复制至 `client` 目录下。删除 `fund-analysis`。
+2. 使用 vite 创建项目，在项目目录下终端中执行 `npm create vite`, Project name 为 fund-analysis。选择 React -> JavaScript ->（Use rolldown-vite (Experimental)?）No ->（Install with npm and start now?）Yes。将新生成的 fund-analysis 文件夹重命名为 client。将 `client/package.json` 文件中 `scripts` 下 `"dev": "vite"` 改为 `"start": "vite"`，这样启动项目命令依然为 `npm run start`，否则命令为 `npm run dev`。
+
+    eslint 能够帮助开发代码时更规范，bug 提示更精确。vite5 之上安装后自动安装 eslint，无需多余配置。当前为 vite7。
 
 3. 进入 client 目录下执行 `npm install` 安装需要的库。
 
@@ -181,15 +204,16 @@ alembic downgrade base
 
 #### 前端
 
-参考网址：https://github.com/umijs/umi-request/blob/master/README_zh-CN.md（创建实例）
-
-在 `utils/request.js` 中重新封装 `request`。
+这里使用 `axios` 库发送请求，`umi-request` 库请移步至 `历史笔记\umi-request`
 
 ``` javascript
-import { extend } from "umi-request";
+import axios from "axios";
 
-export const request = extend({
-    prefix: "http://localhost:8000",
+const BASE_URL = "http://localhost:8000";
+const TIMEOUT = 5000;
+const clientInstance = axios.create({
+    baseURL: BASE_URL,
+    timeout: TIMEOUT,
 });
 ```
 
@@ -451,3 +475,219 @@ async def get_user_by_username(session, username: str) -> User:
 2. 有一个可以勾选被过滤的勾选框
 
 #### 后端
+
+## 前端组件库
+
+Taro UI for React - 京东出品，多端合一，所向披靡
+
+https://github.com/jd-opensource/taro-ui
+
+https://taro-ui.jd.com/#/docs/introductionAnt 
+
+Design Mobile of React - 阿里前端 UI 库，面向企业级中后台
+
+https://github.com/ant-design/ant-design-mobile
+
+https://mobile.ant.design/zh/guide/quick-start/
+
+TDesign React Mobile - 腾讯 UI 组件库，配套工具完满，设计工整，文档清晰
+
+https://github.com/Tencent/tdesign-react
+
+https://tdesign.tencent.com/react/overview
+
+NutUI for React - 京东出品，移动端友好，面向电商业务场景
+
+https://github.com/jdf2e/nutui-react
+
+https://nutui.jd.com/h5/react/2x/#/zh-CN/guide/intro-react
+
+Material-UI - 全球顶级 React 组件库 Google Material 设计标准 android 首先
+
+https://mui.com/material-ui/getting-started/installation/
+
+https://github.com/mui/material-ui
+
+React WeUI - 微信出品，面向微信移动端，完整的微信生态 UI 组件库
+
+https://weui.github.io/react-weui/docs/#/react-weui/docs/page/2/articles/0
+
+https://github.com/weui/react-weui
+
+Zarm Design React - 宝藏 React 移动端 UI 组件库
+
+https://zarm.design/#/
+
+https://github.com/ZhongAnTech/zarm
+
+## 历史笔记
+
+### create-react-app
+
+react 中项目创建有很多种，create-react-app 是其中的一种，一般用于快速、小型的项目启动和开发。
+
+在项目根目录执行 `npx create-react-app 项目名称`。会在项目根目录生成一个以项目名称命名的文件夹。 `node_modules` 文件夹、`package.json`、`package-lock.json`、`README.md`、`public\index.html`、`src\index.js`、`src\App.js` 保留，其他文件都可删除。
+
+`public\index.html` 文件中可以把涉及到之前删除的文件的代码都删掉。
+
+`src\index.js` 文件同理，同时把最后一行代码及其导入 `reportWebVitals()` 都删除。`reportWebVitals` 是 Google 推出的用于衡量网页性能的核心指标工具，旨在帮助开发者优化用户体验，会将指标数据上报。
+
+`src\App.js` 文件同理，同时 `App` 方法中的 `return` 的内容也可以删除，在 `return` 中开始写自己的 `react` 代码。
+
+现在 `create-react-app` 已经自带 eslint 了。
+
+#### 设置导入的默认起始目录
+
+将 src 设置为导入的默认起始目录。
+
+创建 `jsconfig.json` 文件，
+
+``` json
+{
+    "compilerOptions": {
+        "baseUrl": "src"
+    },
+    // 排除编译时要处理的目录
+    "exclude": ["node_modules"]
+}
+```
+
+### vite
+
+不喜欢，下次起项目不用这个了，这次是 umi-request 过时了总是会有警告，一开始以为是 create-react-app 太老了，正好学到 vite 就换了，换完才发现是 umi-request 的锅😑。
+
+优点：
+
+1. css 类名、id名 不用担心不同组件中间名称重复问题
+
+缺点：
+
+1. jsx 文件中 `className=`、`id=` 后面不再是字符串，而是 js，所以不适合用“-”分割单词，需要时使用驼峰命名法
+2. 可能需要多加一个 `div`，也就是 `index.html` 中自带的 `id=root` 不能使用了，除非添加全局样式，所以一般需要多加一个 `div` 来处理全屏。
+3. 浏览器中的类名为了处理不重复问题会在类名中添加一串随机字符串，很难看
+
+#### 设置导入的默认起始目录别名
+
+将 src 设置为导入的默认起始目录别名。
+
+`vite.config.js` 文件 `defineConfig` 中
+
+``` json
+{
+    resolve: {
+        alias: {
+            "@": "/src",
+        },
+    },
+}
+```
+
+#### 设置运行端口
+
+`vite.config.js` 文件 `defineConfig` 中
+
+``` js
+{
+    server: {
+        port: 3000,
+        host: "127.0.0.1",
+    },
+}
+```
+
+### umi-request
+
+实现请求原本计划使用这个库的，在它的 github 上有与 fetch、axios 的对比很诱人，但是后来发现它已经停止更新了。所以改用 axios 库了。
+参考网址：https://github.com/umijs/umi-request/blob/master/README_zh-CN.md（创建实例）
+
+在 `utils/request.js` 中重新封装 `request`。
+
+``` javascript
+import { extend } from "umi-request";
+
+export const request = extend({
+    prefix: "http://localhost:8000",
+});
+```
+
+在 `services/login.js` 中使用 `request`
+
+``` javascript
+import { request } from "utils/request";
+
+export async function login(params) {
+    return request.post("/login", {
+        data: params,
+    });
+}
+
+export async function regist(params) {
+    return request.post("/regist", {
+        data: params,
+    });
+}
+```
+
+在 `components/login/LoginPage.jsx` 的 `LoginBox` 组件中调用 `login`
+
+``` javascript
+function LoginBox() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        await login({ username, password })
+            .then((response) => {
+                if (response.success) {
+                    navigate("/home");
+                } else {
+                    alert("注册失败：" + response.message);
+                }
+            })
+            .catch((error) => {
+                console.error("注册请求失败：", error);
+            });
+    }
+
+    return (
+        <div className="login-container">
+            <h2 className="login-title">登录</h2>
+            <form className="login-form" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="用户名"
+                    required
+                    pattern="[a-zA-Z0-9_]+"
+                    title="只能包含字母、数字和下划线"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="密码"
+                    required
+                    pattern="[a-zA-Z0-9_]+"
+                    title="只能包含字母、数字和下划线"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit" className="login-btn">
+                    登录
+                </button>
+            </form>
+            <div className="forget-and-regist">
+                <a href="#" className="forget-link">
+                    忘记用户名或密码
+                </a>
+                <Link to={"/regist"} className="regist-link">
+                    注册账号
+                </Link>
+            </div>
+        </div>
+    );
+}
+```
+
