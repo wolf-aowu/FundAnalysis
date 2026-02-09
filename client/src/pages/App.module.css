@@ -1,0 +1,19 @@
+#backgroundBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.backgroundContainer {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background-image: url("https://picsum.photos/1920/1080?white,gold,ocean,no-plants");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1;
+}

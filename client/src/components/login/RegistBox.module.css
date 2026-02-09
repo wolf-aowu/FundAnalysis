@@ -1,24 +1,4 @@
-#root {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-}
-
-.background-container {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    background-image: url("https://picsum.photos/1920/1080?white,gold,ocean,no-plants");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: -1;
-}
-
-.login-container {
+.registContainer {
     min-width: 400px;
     max-width: 600px;
     min-height: 200px;
@@ -31,11 +11,11 @@
     animation: fadeInUp 0.8s ease-out;
 }
 
-.login-form {
+.registForm {
     text-align: center;
 }
 
-.login-title {
+.registTitle {
     font-size: 40px;
     font-weight: 600;
     letter-spacing: 50px;
@@ -74,7 +54,7 @@ input:nth-last-child(2) {
 }
 
 /* button 是 inline-block 元素 */
-.login-btn {
+.registBtn {
     font-size: 22px;
     font-weight: 600;
     letter-spacing: 40px;
@@ -90,26 +70,26 @@ input:nth-last-child(2) {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.login-btn:hover {
+.registBtn:hover {
     background: linear-gradient(135deg, #3a5eca, #5f50b8);
     transform: translateY(-1px);
 }
 
-.login-btn:active {
+.registBtn:active {
     background: linear-gradient(135deg, #3454b4, #5546a3);
     transform: translateY(0);
     box-shadow: 0 2px 10px rgba(65, 105, 225, 0.3);
 }
 
-.forget-and-regist {
+.forgetAndLogin {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 }
 
-.forget-link,
-.regist-link {
+.forgetLink,
+.loginLink {
     color: #0a2463;
     font-size: 14px;
     cursor: pointer;

@@ -1,13 +1,9 @@
-import { request } from "utils/request";
+import { post } from "@/services/Request.js";
 
 export async function login(params) {
-    return request.post("/login", {
-        data: params,
-    });
+    return await post("/login", params);
 }
 
 export async function regist(params) {
-    return request.post("/regist", {
-        data: params,
-    });
+    return await post("/regist", params);
 }
