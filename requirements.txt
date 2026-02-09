@@ -11,3 +11,5 @@ cryptography
 alembic
 # python 命令行工具
 click
+# token 生成工具
+pyjwt
