@@ -1,3 +1,5 @@
+import os
+
 __all__ = [
     "Config",
     "DevelopmentConfig",
@@ -15,6 +17,8 @@ class Config:
     APP_HOST = "127.0.0.1"
     APP_PORT = "8000"
     MYSQL_CHARSET = "utf8mb4"
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES"))
 
 
 class DevelopmentConfig(Config):

@@ -1,3 +1,4 @@
+from app.routers.root import root_router
 import uvicorn
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -7,6 +8,7 @@ from contextlib import asynccontextmanager
 from app.configs.cors_config import origins
 from app.utils.config import get_config
 from app.utils.database import get_async_database_url
+from app.servers.middlewares import ProcessTimeMiddleware, TokenMiddleware
 
 # https: // blog.51cto.com/u_16099326/11296750
 # https: // fund.eastmoney.com/js/fundcode_search.js
@@ -47,6 +49,11 @@ app = FastAPI(
     description=config_obj.APP_DESCRIPTION,
     lifespan=lifespan,
 )
+
+# 最先添加的中间件是最内层，最后添加的中间件是最外层
+# 可以理解为是一个栈，最先放入的左后被拿出执行
+app.add_middleware(ProcessTimeMiddleware)
+app.add_middleware(TokenMiddleware, secret_key=config_obj.JWT_SECRET_KEY)
 # 配置 CORS 中间件
 app.add_middleware(
     CORSMiddleware,
@@ -56,7 +63,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from app.routers.root import root_router
 app.include_router(root_router, tags=["/"])
 
 if __name__ == "__main__":
